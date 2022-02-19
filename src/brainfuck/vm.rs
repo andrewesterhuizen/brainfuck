@@ -1,19 +1,7 @@
+use crate::brainfuck::operator::Operator;
 use std::io::Read;
 
-#[repr(u8)]
-#[derive(Debug, PartialEq)]
-enum Operator {
-    IncrementPointer, // >  -  move the pointer right
-    DecrementPointer, // <  -  move the pointer left
-    IncrementCell,    // +  -  increment the current cell
-    DecrementCell,    // -  -  decrement the current cell
-    Output,           // .  -  output the value of the current cell
-    Input,            // ,  -  replace the value of the current cell with input
-    LoopStart,        // [  -  jump to the matching ] instruction if the current value is zero
-    LoopEnd,          // ]  -  jump to the matching [ instruction if the current value is not zero
-}
-
-struct VM<const MEM_SIZE: usize> {
+pub struct VM<const MEM_SIZE: usize> {
     memory_pointer: usize,
     instruction_pointer: usize,
     memory: [u8; MEM_SIZE],
@@ -199,79 +187,4 @@ fn read_char() -> u8 {
         .next()
         .and_then(|result| result.ok())
         .unwrap()
-}
-
-struct Parser {}
-
-impl Parser {
-    pub fn new() -> Parser {
-        Parser {}
-    }
-
-    pub fn run(&self, source: String) -> Vec<Operator> {
-        let mut program = Vec::new();
-
-        for c in source.chars() {
-            let op = match c {
-                '<' => Operator::DecrementPointer,
-                '>' => Operator::IncrementPointer,
-                '-' => Operator::DecrementCell,
-                '+' => Operator::IncrementCell,
-                '.' => Operator::Output,
-                ',' => Operator::Input,
-                '[' => Operator::LoopStart,
-                ']' => Operator::LoopEnd,
-                _ => continue,
-            };
-
-            program.push(op);
-        }
-
-        program
-    }
-}
-
-#[test]
-fn parser_works() {
-    let program = "><+-.,[]".to_string();
-    let instructions = Parser::new().run(program);
-
-    let expected = vec![
-        Operator::IncrementPointer,
-        Operator::DecrementPointer,
-        Operator::IncrementCell,
-        Operator::DecrementCell,
-        Operator::Output,
-        Operator::Input,
-        Operator::LoopStart,
-        Operator::LoopEnd,
-    ];
-
-    assert_eq!(instructions, expected);
-}
-
-#[test]
-fn parser_ignores_unknown_characters() {
-    let program = "1234567890qwertyuiopasdfghjklzxcvbnm\n\r\t".to_string();
-    let instructions = Parser::new().run(program);
-    assert_eq!(instructions.len(), 0);
-}
-
-pub struct Brainfuck {
-    parser: Parser,
-    vm: VM<32768>,
-}
-
-impl Brainfuck {
-    pub fn new() -> Brainfuck {
-        Brainfuck {
-            parser: Parser::new(),
-            vm: VM::new(),
-        }
-    }
-
-    pub fn run(&mut self, source: String) {
-        let instructions = self.parser.run(source);
-        self.vm.run(&instructions);
-    }
 }
