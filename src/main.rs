@@ -1,16 +1,11 @@
 mod brainfuck;
 
 fn main() {
-    let mut program = Vec::new();
+    // print "!!!!!"
+    let mut program = String::new();
+    program += &"+".repeat(33);
+    program += &".".repeat(5);
 
-    for _ in 0..33 {
-        program.push(brainfuck::Operator::IncrementCell);
-    }
-
-    for _ in 0..5 {
-        program.push(brainfuck::Operator::Output);
-    }
-
-    let mut vm = brainfuck::VM::new();
-    vm.run(&program);
+    let mut interpreter = brainfuck::Brainfuck::new();
+    interpreter.run(program);
 }
