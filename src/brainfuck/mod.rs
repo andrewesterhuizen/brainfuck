@@ -1,4 +1,4 @@
-pub mod operator;
+mod operator;
 mod parser;
 mod vm;
 

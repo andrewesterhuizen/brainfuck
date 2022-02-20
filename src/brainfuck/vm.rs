@@ -22,7 +22,7 @@ impl<const MEM_SIZE: usize> VM<MEM_SIZE> {
 
             match op {
                 Operator::DecrementPointer => {
-                    self.memory_pointer = self.memory_pointer.wrapping_sub(1) % MEM_SIZE
+                    self.memory_pointer = self.memory_pointer.wrapping_sub(1) % MEM_SIZE;
                 }
                 Operator::IncrementPointer => {
                     self.memory_pointer = self.memory_pointer.wrapping_add(1) % MEM_SIZE;
@@ -79,11 +79,10 @@ fn find_next_loop_end_address(loop_start_address: usize, program: &Vec<Operator>
             Operator::LoopStart => {
                 nest_level += 1;
             }
-            _ => (),
+            _ => {}
         }
 
         ip += 1;
-        println!();
     }
 
     assert!(false, "no matching ] found");
@@ -109,7 +108,7 @@ fn find_previous_loop_start_address(loop_end_address: usize, program: &Vec<Opera
                 }
                 nest_level -= 1;
             }
-            _ => (),
+            _ => {}
         }
 
         ip -= 1;
